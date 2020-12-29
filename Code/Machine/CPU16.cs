@@ -30,7 +30,8 @@ namespace Machine
         private Counter m_rPC;
         private MultiBitRegister m_rA, m_rD;
         private BitwiseMux m_gAMux, m_gMAMux;
-        private AndGate and;
+        
+
         
         //here we initialize and connect all the components, as in Figure 5.9 in the book
         public CPU16()
@@ -79,51 +80,117 @@ namespace Machine
 
         //add here components to implement the control unit 
         private BitwiseMultiwayMux m_gJumpMux;//an example of a control unit compnent - a mux that controls whether a jump is made
-        
-
+        private AndGate and;
+        private OrGate orOfA;
+        private AndGate andOfMemoryWrite;
+        private AndGate andOfpc;
+        private OrGate jumpOr1;
+        private OrGate jumpOr2;
+        private NotGate jumpNot1;
+        private NotGate jumpNot2;
+        private NotGate jumpNot3;
+        AndGate andOfA;
+        NotGate notOfA;
         private void ConnectControls()
         {
             //1. connect control of mux 1 (selects entrance to register A)
-
-            m_gAMux.ConnectControl(Instruction[15]); // opcode
+            
+            m_gAMux.ConnectControl(Instruction[Type]); // opcode
 
             //2. connect control to mux 2 (selects A or M entrance to the ALU)
 
-            m_gMAMux.ConnectControl(Instruction[12]);  //  a/m 
+            m_gMAMux.ConnectControl(Instruction[A]);  //  a/m 
 
             //3. consider all instruction bits only if C type instruction (MSB of instruction is 1)
 
+
             //4. connect ALU control bits
 
-            m_gALU.ZeroX.ConnectInput(Instruction[11]);
-            m_gALU.NotX.ConnectInput(Instruction[10]);
-            m_gALU.ZeroY.ConnectInput(Instruction[9]);
-            m_gALU.NotY.ConnectInput(Instruction[8]);
-            m_gALU.F.ConnectInput(Instruction[7]);
-            m_gALU.NotOutput.ConnectInput(Instruction[6]);
+            m_gALU.ZeroX.ConnectInput(Instruction[C1]);
+            m_gALU.NotX.ConnectInput(Instruction[C2]);
+            m_gALU.ZeroY.ConnectInput(Instruction[C3]);
+            m_gALU.NotY.ConnectInput(Instruction[C4]);
+            m_gALU.F.ConnectInput(Instruction[C5]);
+            m_gALU.NotOutput.ConnectInput(Instruction[C6]);
 
             //5. connect control to register D (very simple)
             and = new AndGate();
-            and.ConnectInput1(Instruction[15]);
-            and.ConnectInput2(Instruction[5]);
+            and.ConnectInput1(Instruction[Type]);
+            and.ConnectInput2(Instruction[D2]);  
             m_rD.Load.ConnectInput(and.Output);
-            //6. connect control to register A (a bit more complicated)
 
-            //7. connect control to MemoryWrite
+
+            //6. connect control to register A (a bit more complicated)
+            orOfA = new OrGate(); // shortcut for what we did in lesson "instead using and & not gates"
+            
+            // to implement as in lecture
+            andOfA = new AndGate();
+            notOfA = new NotGate();
+            notOfA.ConnectInput(Instruction[Type]);
+            andOfA.ConnectInput1(Instruction[Type]);
+            andOfA.ConnectInput2(Instruction[D1]);
+            orOfA.ConnectInput1(andOfA.Output);
+            orOfA.ConnectInput2(notOfA.Output);
+            m_rA.Load.ConnectInput(orOfA.Output);
+            //7. connect control to MemoryWritea
+            andOfMemoryWrite = new AndGate();
+            andOfMemoryWrite.ConnectInput1(Instruction[Type]);
+            andOfMemoryWrite.ConnectInput2(Instruction[D3]);
+            MemoryWrite.ConnectInput(andOfMemoryWrite.Output);
 
             //8. create inputs for jump mux
+            Wire on = new Wire();
+            on.Value = 1;
+            Wire off = new Wire();
+            off.Value = 0;
+
+            m_gJumpMux = new BitwiseMultiwayMux(1, 3);  // so i'm gonna use it as jump box in lesson
+            jumpOr1 = new OrGate();
+            jumpOr1.ConnectInput1(m_gALU.Zero);
+            jumpOr1.ConnectInput2(m_gALU.Negative);
+            jumpNot1 = new NotGate();
+            jumpNot1.ConnectInput(jumpOr1.Output);
+            jumpNot2 = new NotGate();
+            jumpNot2.ConnectInput(m_gALU.Negative);
+            jumpNot3 = new NotGate();
+            jumpNot3.ConnectInput(m_gALU.Zero);
+            jumpOr2 = new OrGate();
+            jumpOr2.ConnectInput1(m_gALU.Zero);
+            jumpOr2.ConnectInput2(m_gALU.Negative);
+
+            Wire input1 = off; // we did somthing like this in practical session
+            Wire input2 = jumpNot1.Output;
+            Wire input3 = m_gALU.Zero;
+            Wire input4 = jumpNot2.Output;
+            Wire input5 = m_gALU.Negative;
+            Wire input6 = jumpNot3.Output;
+            Wire input7 = jumpOr2.Output;
+            Wire input8 = on;
+
+
+            //9. connect jump mux (this is the most complicated part
+            m_gJumpMux.Inputs[0][0].ConnectInput(input1);
+            m_gJumpMux.Inputs[1][0].ConnectInput(input2);
+            m_gJumpMux.Inputs[2][0].ConnectInput(input3);
+            m_gJumpMux.Inputs[3][0].ConnectInput(input4);
+            m_gJumpMux.Inputs[4][0].ConnectInput(input5);
+            m_gJumpMux.Inputs[5][0].ConnectInput(input6);
+            m_gJumpMux.Inputs[6][0].ConnectInput(input7);
+            m_gJumpMux.Inputs[7][0].ConnectInput(input8);
             
-
-            //9. connect jump mux (this is the most complicated part)
-            m_gJumpMux = new BitwiseMultiwayMux(1, 3);
-
-
+            m_gJumpMux.Control[0].ConnectInput(Instruction[J3]);
+            m_gJumpMux.Control[1].ConnectInput(Instruction[J2]);
+            m_gJumpMux.Control[2].ConnectInput(Instruction[J1]);   
+            
             //10. connect PC load control
-            m_rPC.ConnectReset(Reset);
-            m_rPC.ConnectInput();
-            m_rPC.ConnectLoad();
-            
+            andOfpc = new AndGate();
+            andOfpc.ConnectInput1(Instruction[Type]);
+            andOfpc.ConnectInput2(m_gJumpMux.Output[0]);
+
+
+            m_rPC.ConnectLoad(andOfpc.Output);
         }
+
 
         public override string ToString()
         {
