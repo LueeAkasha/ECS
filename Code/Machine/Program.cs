@@ -14,12 +14,12 @@ namespace Machine
         static void Main(string[] args)
         {
             Machine16 machine = new Machine16(false, true);
-            machine.Code.LoadFromFile(@"C:\Users\lueea\Desktop\Assembly examples\ScreenExample.hack");
+            machine.Code.LoadFromFile(@"C:\Users\lueea\Desktop\Assembly examples\Sum100To200.hack");
             machine.Data[0] = 100;
             machine.Data[1] = 15;
             DateTime dtStart = DateTime.Now;
             machine.Reset();
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 200; i++)
             {
                 machine.CPU.PrintState();
                 Console.WriteLine();

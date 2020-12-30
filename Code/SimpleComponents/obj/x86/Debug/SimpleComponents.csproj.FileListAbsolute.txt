@@ -16,3 +16,9 @@ C:\Users\lueea\Desktop\Code\SimpleComponents\obj\x86\Debug\SimpleComponents.cspr
 C:\Users\lueea\Desktop\Code\SimpleComponents\obj\x86\Debug\SimpleComponents.csproj.CoreCompileInputs.cache
 C:\Users\lueea\Desktop\Code\SimpleComponents\obj\x86\Debug\SimpleComponents.exe
 C:\Users\lueea\Desktop\Code\SimpleComponents\obj\x86\Debug\SimpleComponents.pdb
+C:\Users\lueea\ECS\Code\SimpleComponents\bin\Debug\SimpleComponents.exe
+C:\Users\lueea\ECS\Code\SimpleComponents\bin\Debug\SimpleComponents.pdb
+C:\Users\lueea\ECS\Code\SimpleComponents\obj\x86\Debug\SimpleComponents.csprojAssemblyReference.cache
+C:\Users\lueea\ECS\Code\SimpleComponents\obj\x86\Debug\SimpleComponents.csproj.CoreCompileInputs.cache
+C:\Users\lueea\ECS\Code\SimpleComponents\obj\x86\Debug\SimpleComponents.exe
+C:\Users\lueea\ECS\Code\SimpleComponents\obj\x86\Debug\SimpleComponents.pdb
