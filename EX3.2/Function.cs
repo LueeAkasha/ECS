@@ -80,8 +80,11 @@ namespace SimpleCompiler
                 Body.Add(s);
             }
             //Need to check here that the last statement is a return statement
+            /********************************************************************************************************************************************/
             //Finally, the function should end with }
             Token tEnd = sTokens.Pop();//}
+            if (!(tEnd is Parentheses) || !((Parentheses)tEnd).Name.Equals("}"))
+                throw new SyntaxErrorException("$Expected }", tEnd);
         }
 
         public override string ToString()
