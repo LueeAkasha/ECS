@@ -18,7 +18,27 @@ namespace SimpleCompiler
 
         public override void Parse(TokensStack sTokens)
         {
-            throw new NotImplementedException();
+            Token tLet = sTokens.Pop();
+            if (!tLet.Equals("let"))
+                throw new SyntaxErrorException("$Expected let", tLet);
+
+            Token tId = sTokens.Pop();
+            if (!(tId is Identifier))
+                throw new SyntaxErrorException("$Expected identifier", tId);
+            else
+                this.Variable = ((Identifier)tId).Name;
+
+            Token tEqual = sTokens.Pop();
+            if (!tEqual.Equals("="))
+                throw new SyntaxErrorException("$Expected =",tEqual);
+
+
+            Value = Expression.Create(sTokens);
+            Value.Parse(sTokens);
+
+            Token tEnd = sTokens.Pop();
+            if (!tEnd.Equals(";"))
+                throw new SyntaxErrorException("$Expected ;", tEnd);
         }
 
     }
