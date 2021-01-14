@@ -37,7 +37,7 @@ namespace SimpleCompiler
             Value.Parse(sTokens);
 
             Token tEnd = sTokens.Pop();
-            if (!(tEnd is Parentheses) || !((Parentheses)tEnd).Name.Equals(";"))
+            if (!(tEnd is Separator) || !((Separator)tEnd).Name.Equals(";"))
                 throw new SyntaxErrorException("$Expected ;", tEnd);
         }
 
