@@ -10,7 +10,36 @@ namespace SimpleCompiler
 
         public override void Parse(TokensStack sTokens)
         {
-            throw new NotImplementedException();
+            Token tFun = sTokens.Pop();
+            if (!(tFun is Identifier))
+                throw new SyntaxErrorException("$Expected identifier", tFun);
+
+            Token fun_open = sTokens.Pop();
+            if (!(fun_open is Parentheses) || !((Parentheses)fun_open).Name.Equals("("))
+                throw new SyntaxErrorException("$Expected (", fun_open);
+
+            while (sTokens.Count>0 && !(sTokens.Peek() is Parentheses)) {
+
+                Expression arg = Expression.Create(sTokens);
+                arg.Parse(sTokens);
+                Args.Add(arg);
+
+                if (sTokens.Count > 0 && sTokens.Peek() is Separator)//,
+                    sTokens.Pop();
+            }
+
+
+            
+
+
+
+            Token fun_close = sTokens.Pop();
+            if (!(fun_close is Parentheses) || !((Parentheses)fun_close).Name.Equals(")"))
+                throw new SyntaxErrorException("$Expected )", fun_close);
+
+            Token tEnd = sTokens.Pop();
+            if(!(tEnd is Separator) || !((Separator)tEnd).Name.Equals(";"))
+                    throw new SyntaxErrorException("$Expected ;", tEnd);
         }
 
         public override string ToString()
