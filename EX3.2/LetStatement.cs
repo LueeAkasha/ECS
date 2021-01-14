@@ -19,7 +19,7 @@ namespace SimpleCompiler
         public override void Parse(TokensStack sTokens)
         {
             Token tLet = sTokens.Pop();
-            if (!tLet.Equals("let"))
+            if (!(tLet is Statement) || !((Statement)tLet).Name.Equals("let"))
                 throw new SyntaxErrorException("$Expected let", tLet);
 
             Token tId = sTokens.Pop();
@@ -29,7 +29,7 @@ namespace SimpleCompiler
                 this.Variable = ((Identifier)tId).Name;
 
             Token tEqual = sTokens.Pop();
-            if (!tEqual.Equals("="))
+            if (!(tEqual is Operator) || !((Operator)tEqual).Name.Equals("="))
                 throw new SyntaxErrorException("$Expected =",tEqual);
 
 
@@ -37,7 +37,7 @@ namespace SimpleCompiler
             Value.Parse(sTokens);
 
             Token tEnd = sTokens.Pop();
-            if (!tEnd.Equals(";"))
+            if (!(tEnd is Parentheses) || !((Parentheses)tEnd).Name.Equals(";"))
                 throw new SyntaxErrorException("$Expected ;", tEnd);
         }
 
