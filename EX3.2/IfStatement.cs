@@ -14,25 +14,25 @@ namespace SimpleCompiler
 
         public override void Parse(TokensStack sTokens)
         {
-            if (sTokens.Peek().Equals("if"))
+            if (((Statement)sTokens.Peek()).Name.Equals("if"))
             {
                 Token tIf = sTokens.Pop();
-                if (tIf.Equals("if"))
+                if (!(tIf is Statement) || !((Statement)tIf).Name.Equals("if"))
                     throw new SyntaxErrorException("$Expected if", tIf);
 
                 Token con_open = sTokens.Pop();
-                if (!con_open.Equals("("))
+                if (!(con_open is Parentheses) || !((Parentheses)con_open).Name.Equals("("))
                     throw new SyntaxErrorException("$Expected (", con_open);
 
                 Term = Expression.Create(sTokens);
                 Term.Parse(sTokens);
 
                 Token con_close = sTokens.Pop();
-                if (!con_close.Equals(")"))
+                if (!(con_close is Parentheses) || !((Parentheses)con_close).Name.Equals(")"))
                     throw new SyntaxErrorException("$Expected )", con_close);
 
                 Token open_if = sTokens.Pop();
-                if (!open_if.Equals("{"))
+                if (!(open_if is Parentheses) || !((Parentheses)open_if).Name.Equals("{"))
                     throw new SyntaxErrorException("$Expected {", open_if);
                 
                 while(sTokens.Count > 0 & !(sTokens.Peek() is Parentheses))
@@ -43,20 +43,20 @@ namespace SimpleCompiler
                 }
 
                 Token close_if = sTokens.Pop();
-                if (!close_if.Equals("}"))
+                if (!(close_if is Parentheses) || !((Parentheses)close_if).Name.Equals("}"))
                     throw new SyntaxErrorException("$Expected }", close_if);
 
-                if (sTokens.Peek().Equals("else"))
+                if ((sTokens.Peek() is Statement) && ((Statement)sTokens.Peek()).Name.Equals("else"))
                 {
 
                     Token tElse = sTokens.Pop();
-                    if (tIf.Equals("else"))
+                    if (!(tIf is Statement) || !((Statement)tIf).Name.Equals("else"))
                         throw new SyntaxErrorException("$Expected else", tElse);
 
 
                     Token open_else = sTokens.Pop(); // not must
 
-                    if (!open_else.Equals("{"))
+                    if (!(open_else is Parentheses) || !((Parentheses)open_else).Name.Equals("{"))
                         throw new SyntaxErrorException("$Expected {", open_else);
 
 
@@ -69,7 +69,7 @@ namespace SimpleCompiler
 
 
                     Token close_else = sTokens.Pop();
-                    if (!close_else.Equals("}"))
+                    if (!(close_else is Parentheses) || !((Parentheses)close_else).Name.Equals("}"))
                         throw new SyntaxErrorException("$Expected }", close_else);
                 }
             }
