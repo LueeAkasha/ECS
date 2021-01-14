@@ -14,39 +14,65 @@ namespace SimpleCompiler
 
         public override void Parse(TokensStack sTokens)
         {
-            Token tIf = sTokens.Pop();
-            if (tIf.Equals("if"))
-                throw new SyntaxErrorException("$Expected if", tIf);
+            if (sTokens.Peek().Equals("if"))
+            {
+                Token tIf = sTokens.Pop();
+                if (tIf.Equals("if"))
+                    throw new SyntaxErrorException("$Expected if", tIf);
+
+                Token con_open = sTokens.Pop();
+                if (!con_open.Equals("("))
+                    throw new SyntaxErrorException("$Expected (", con_open);
+
+                Term = Expression.Create(sTokens);
+                Term.Parse(sTokens);
+
+                Token con_close = sTokens.Pop();
+                if (!con_close.Equals(")"))
+                    throw new SyntaxErrorException("$Expected )", con_close);
+
+                Token open_if = sTokens.Pop();
+                if (!open_if.Equals("{"))
+                    throw new SyntaxErrorException("$Expected {", open_if);
+                
+                while(sTokens.Count > 0 & !(sTokens.Peek() is Parentheses))
+                {
+                    StatetmentBase statetmentBase = StatetmentBase.Create(sTokens.Peek());
+                    statetmentBase.Parse(sTokens);
+                    DoIfTrue.Add(statetmentBase);
+                }
+
+                Token close_if = sTokens.Pop();
+                if (!close_if.Equals("}"))
+                    throw new SyntaxErrorException("$Expected }", close_if);
+
+                if (sTokens.Peek().Equals("else"))
+                {
+
+                    Token tElse = sTokens.Pop();
+                    if (tIf.Equals("else"))
+                        throw new SyntaxErrorException("$Expected else", tElse);
 
 
-             // (Exp)
+                    Token open_else = sTokens.Pop(); // not must
 
-            Token open_if = sTokens.Pop();
-            if (!open_if.Equals("{"))
-                throw new SyntaxErrorException("$Expected {", open_if);
-            // do if true
-
-            Token close_if = sTokens.Pop();
-            if (!close_if.Equals("}"))
-                throw new SyntaxErrorException("$Expected }", close_if);
+                    if (!open_else.Equals("{"))
+                        throw new SyntaxErrorException("$Expected {", open_else);
 
 
-            Token tElse = sTokens.Pop();
-            if (tIf.Equals("else"))
-                throw new SyntaxErrorException("$Expected else", tElse);
-
-            Token open_else = sTokens.Pop(); // not must
-            
-            if (!open_else.Equals("{"))
-                throw new SyntaxErrorException("$Expected {", open_else);
-
-            
-            //do if false
+                    while (sTokens.Count > 0 & !(sTokens.Peek() is Parentheses))
+                    {
+                        StatetmentBase statetmentBase = StatetmentBase.Create(sTokens.Peek());
+                        statetmentBase.Parse(sTokens);
+                        DoIfFalse.Add(statetmentBase);
+                    }
 
 
-            Token close_else = sTokens.Pop();
-            if (!close_else.Equals("}"))
-                throw new SyntaxErrorException("$Expected }", close_else);
+                    Token close_else = sTokens.Pop();
+                    if (!close_else.Equals("}"))
+                        throw new SyntaxErrorException("$Expected }", close_else);
+                }
+            }
         }
 
         public override string ToString()
