@@ -16,7 +16,7 @@ namespace SimpleCompiler
         {
             //First, we remove the "return" token
             Token tRet = sTokens.Pop();//return
-            if (!tRet.Equals("return"))
+            if (!(tRet is Statement) || !((Statement)tRet).Name.Equals("return"))
                 throw new SyntaxErrorException("$Expected return", tRet);
             //Now, we create the correct Expression type based on the top token in the stack
             Expression = Expression.Create(sTokens);
@@ -24,7 +24,7 @@ namespace SimpleCompiler
             Expression.Parse(sTokens);
             //After the expression was parsed, we expect to see ;
             Token tEnd = sTokens.Pop();//;
-            if (!tEnd.Equals(";"))
+            if (!(tEnd is Separator) || !((Separator)tEnd).Name.Equals(";"))
                 throw new SyntaxErrorException("$Expected ;", tEnd);
         }
 
