@@ -27,3 +27,10 @@ D:\Teaching\ECS\2017\Ex3.3\Solution\obj\Debug\SimpleCompiler.csprojResolveAssemb
 D:\Teaching\ECS\2017\Ex3.3\Solution\obj\Debug\SimpleCompiler.csproj.CoreCompileInputs.cache
 D:\Teaching\ECS\2017\Ex3.3\Solution\obj\Debug\ExpressionCompiler.exe
 D:\Teaching\ECS\2017\Ex3.3\Solution\obj\Debug\ExpressionCompiler.pdb
+C:\Users\luee\Documents\GitHub\ECS\3.3\bin\Debug\ExpressionCompiler.exe.config
+C:\Users\luee\Documents\GitHub\ECS\3.3\bin\Debug\ExpressionCompiler.exe
+C:\Users\luee\Documents\GitHub\ECS\3.3\bin\Debug\ExpressionCompiler.pdb
+C:\Users\luee\Documents\GitHub\ECS\3.3\obj\Debug\SimpleCompiler.csprojAssemblyReference.cache
+C:\Users\luee\Documents\GitHub\ECS\3.3\obj\Debug\SimpleCompiler.csproj.CoreCompileInputs.cache
+C:\Users\luee\Documents\GitHub\ECS\3.3\obj\Debug\ExpressionCompiler.exe
+C:\Users\luee\Documents\GitHub\ECS\3.3\obj\Debug\ExpressionCompiler.pdb

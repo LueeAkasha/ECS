@@ -62,7 +62,7 @@ namespace SimpleCompiler
             }
             catch (Exception e)
             {
-
+                Console.WriteLine(e.ToString());
             }
         }
 

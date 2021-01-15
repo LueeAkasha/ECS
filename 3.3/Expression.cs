@@ -30,7 +30,7 @@ namespace SimpleCompiler
             //if (tFirst.Type == Token.TokenType.ID && tSecond.Name == "[")
             //    return new ArrayExpression();
             throw new SyntaxErrorException("Expected expression", tFirst);
-            return null;
+            
         }
     }
 }
