@@ -20,7 +20,7 @@ namespace SimpleCompiler
         {
             Token tLet = sTokens.Pop();
             if (!(tLet is Statement) || !((Statement)tLet).Name.Equals("let"))
-                throw new SyntaxErrorException("$Expected let", tLet);
+                throw new SyntaxErrorException("$Expected let"+tLet.ToString(), tLet);
 
             Token tId = sTokens.Pop();
             if (!(tId is Identifier))

@@ -44,7 +44,8 @@ namespace SimpleCompiler
                 LetStatement ls = new LetStatement();
                 ls.Parse(sTokens);
                 lParsed.Add(ls);
-
+                if (sTokens.Count > 0 && sTokens.Peek() is Separator)//,
+                    sTokens.Pop();
             }
             return lParsed;
         }
@@ -55,6 +56,69 @@ namespace SimpleCompiler
         {
             List<string> lAssembly = new List<string>();
             //add here code for computing a single let statement containing only a simple expression
+           
+
+            if (aSimple.Value is NumericExpression) {
+                lAssembly.Add("@" + ((NumericExpression)aSimple.Value).Value);
+                lAssembly.Add("D=A");
+            }
+            else if (aSimple.Value is BinaryOperationExpression) {
+                if (((BinaryOperationExpression)aSimple.Value).Operand1 is VariableExpression && !dSymbolTable.ContainsKey(((BinaryOperationExpression)aSimple.Value).Operand1.ToString()))
+                    throw new Exception(((BinaryOperationExpression)aSimple.Value).Operand1 + " Was not defind!");
+                lAssembly.Add("@" + ((BinaryOperationExpression)aSimple.Value).Operand1.ToString());
+                lAssembly.Add("D=A");
+                lAssembly.Add("@OPERAND1");
+                lAssembly.Add("M=D");
+
+                    if (((BinaryOperationExpression)aSimple.Value).Operand1 is VariableExpression && !dSymbolTable.ContainsKey(((BinaryOperationExpression)aSimple.Value).Operand2.ToString()))
+                        throw new Exception(((BinaryOperationExpression)aSimple.Value).Operand2 + " Was not defind!");
+                lAssembly.Add("@" + ((BinaryOperationExpression)aSimple.Value).Operand2);
+                lAssembly.Add("D=A");
+                lAssembly.Add("@OPERAND2");
+                lAssembly.Add("M=D");
+
+
+                lAssembly.Add("@OPERAND1");
+                lAssembly.Add("D=M");
+                lAssembly.Add("@OPERAND2");
+                lAssembly.Add("D=D" + ((BinaryOperationExpression)aSimple.Value).Operator.ToString() + "M");
+                
+            }
+            else if (aSimple.Value is UnaryOperatorExpression) {
+                if (!dSymbolTable.ContainsKey(((UnaryOperatorExpression)aSimple.Value).Operand.ToString()))
+                    throw new Exception(((UnaryOperatorExpression)aSimple.Value).Operand + " Was not defind!");
+                lAssembly.Add("@"+ ((UnaryOperatorExpression)aSimple.Value).Operand);
+                lAssembly.Add("D=A");
+                lAssembly.Add("D="+((UnaryOperatorExpression)aSimple.Value).Operator+"D");
+            }
+            else if (aSimple.Value is VariableExpression)
+            {
+                if (!dSymbolTable.ContainsKey(((VariableExpression)aSimple.Value).Name))
+                    throw new Exception(dSymbolTable.ContainsKey(((VariableExpression)aSimple.Value).Name) + " was not defind!");
+                lAssembly.Add("@"+ ((VariableExpression)aSimple.Value).Name);
+                lAssembly.Add("D=M");
+            }
+            else {
+                throw new Exception(aSimple.Value.GetType() + " is not supported yet!");
+            }
+
+            if(!dSymbolTable.ContainsKey(aSimple.Variable))
+                throw new Exception(aSimple.Variable + " Was not defind!");
+            lAssembly.Add("@"+aSimple.Variable);
+            lAssembly.Add("M=D");
+
+            lAssembly.Add("@RESULT");
+            lAssembly.Add("M=D");
+            lAssembly.Add("@RESULT");
+            lAssembly.Add("D=M");
+            lAssembly.Add("@ADDRESS");
+            lAssembly.Add("A=M");
+            lAssembly.Add("M=D");
+
+
+            
+            
+
             return lAssembly;
         }
 
@@ -63,6 +127,19 @@ namespace SimpleCompiler
         {
             Dictionary<string, int> dTable = new Dictionary<string, int>();
             //add here code to comptue a symbol table for the given var declarations
+            Queue<VarDeclaration> artificial_vars = new Queue<VarDeclaration>();
+            for (int i = 0; i < lDeclerations.Count; i++)
+            {
+                if (lDeclerations[i].Name[0]=='_') {
+                    artificial_vars.Enqueue(lDeclerations[i]);
+                }
+                else
+                    dTable.Add(lDeclerations[i].Name , dTable.Count);
+            }
+            while(artificial_vars.Count > 0)
+            {
+                dTable.Add(artificial_vars.Dequeue().Name, dTable.Count);
+            }
             //real vars should come before (lower indexes) than artificial vars (starting with _), and their indexes must be by order of appearance.
             //for example, given the declarations:
             //var int x;
@@ -97,7 +174,9 @@ namespace SimpleCompiler
             return lSimplified;
         }
 
- 
+   
+
+
         public LetStatement ParseStatement(List<Token> lTokens)
         {
             TokensStack sTokens = new TokensStack();

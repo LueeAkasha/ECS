@@ -68,6 +68,7 @@
     <Compile Include="Symbol.cs" />
     <Compile Include="Token.cs" />
     <Compile Include="TokensStack.cs" />
+    <Compile Include="UnaryOperatorExpression.cs" />
     <Compile Include="VarDeclaration.cs" />
     <Compile Include="VariableExpression.cs" />
     <Compile Include="VarType.cs" />
