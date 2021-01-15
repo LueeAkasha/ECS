@@ -130,10 +130,9 @@ namespace SimpleCompiler
             char[] delimiter = { ' ', ',', ';', '*', '+', '-', '/', '<', '>', '&', '=', '|', '!', '(', ')', '[', ']', '{', '}', '\t' };
             string sToken;
             int cChars;
-            for (int i = 0; i < lCodeLines.Count; i++)
-            {
 
-                string code_line = lCodeLines[i];
+
+            string code_line = sLine;
                 int position = 0;
                 while (code_line != null && code_line.Length > 0)
                 {
@@ -150,35 +149,35 @@ namespace SimpleCompiler
 
                             if (Token.Parentheses.Contains(sToken[0]))
                             {
-                                Parentheses token = new Parentheses(sToken[0], i, position);
+                                Parentheses token = new Parentheses(sToken[0], iLine, position);
                                 lTokens.Add(token);
                             }
                             else if (Token.Operators.Contains(sToken[0]))
                             {
-                                Operator token = new Operator(sToken[0], i, position);
+                                Operator token = new Operator(sToken[0], iLine, position);
                                 lTokens.Add(token);
                             }
                             else if (Token.Separators.Contains(sToken[0]))
                             {
-                                Separator token = new Separator(sToken[0], i, position);
+                                Separator token = new Separator(sToken[0], iLine, position);
                                 lTokens.Add(token);
                             }
                             else if (Token.Numbers.Contains(sToken[0]))
                             {
-                                Number token = new Number(sToken, i, position);
+                                Number token = new Number(sToken, iLine, position);
                                 lTokens.Add(token);
                             }
                             else
                             {
                                 if (sToken[0] >= 'a' && sToken[0] <= 'z' || sToken[0] >= 'A' && sToken[0] <= 'Z')
                                 {
-                                    Identifier token = new Identifier(sToken, i, position);
+                                    Identifier token = new Identifier(sToken, iLine, position);
                                     lTokens.Add(token);
                                 }
                                 else
                                 {
                                     Token token = new Token();
-                                    token.Line = i;
+                                    token.Line = iLine;
                                     token.Position = position;
                                     throw new SyntaxErrorException("syntaxError", token);
                                 }
@@ -189,22 +188,22 @@ namespace SimpleCompiler
 
                             if (Token.Statements.Contains(sToken))
                             {
-                                Statement token = new Statement(sToken, i, position);
+                                Statement token = new Statement(sToken, iLine, position);
                                 lTokens.Add(token);
                             }
                             else if (Token.VarTypes.Contains(sToken))
                             {
-                                VarType token = new VarType(sToken, i, position);
+                                VarType token = new VarType(sToken, iLine, position);
                                 lTokens.Add(token);
                             }
                             else if (Token.Constants.Contains(sToken))
                             {
-                                Constant token = new Constant(sToken, i, position);
+                                Constant token = new Constant(sToken, iLine, position);
                                 lTokens.Add(token);
                             }
                             else if (isNumber(sToken))
                             {
-                                Number token = new Number(sToken, i, position);
+                                Number token = new Number(sToken, iLine, position);
                                 lTokens.Add(token);
                             }
                             else
@@ -216,19 +215,19 @@ namespace SimpleCompiler
                                         if (!(sToken[j] >= 'a' && sToken[j] <= 'z' || sToken[j] >= 'A' && sToken[j] <= 'Z' || Token.Numbers.Contains(sToken[j])))
                                         {
                                             Token corrupt_token = new Token();
-                                            corrupt_token.Line = i;
+                                            corrupt_token.Line = iLine;
                                             corrupt_token.Position = position;
                                             throw new SyntaxErrorException("syntaxError", corrupt_token);
                                         }
 
                                     }
-                                    Identifier token = new Identifier(sToken, i, position);
+                                    Identifier token = new Identifier(sToken, iLine, position);
                                     lTokens.Add(token);
                                 }
                                 else
                                 {
                                     Token token = new Token();
-                                    token.Line = i;
+                                    token.Line = iLine;
                                     token.Position = position;
                                     throw new SyntaxErrorException("syntaxError", token);
                                 }
@@ -237,7 +236,7 @@ namespace SimpleCompiler
 
                     }
                     position = position + sToken.Length;
-                }
+                
 
             }
             return lTokens;
