@@ -14,6 +14,8 @@ namespace SimpleCompiler
 
         public override void Parse(TokensStack sTokens)
         {
+            DoIfTrue = new List<StatetmentBase>();
+            DoIfFalse = new List<StatetmentBase>();
             if (((Statement)sTokens.Peek()).Name.Equals("if"))
             {
                 Token tIf = sTokens.Pop();
@@ -38,7 +40,7 @@ namespace SimpleCompiler
                 if (!(open_if is Parentheses) || ((Parentheses)open_if).Name != '{')
                     throw new SyntaxErrorException("$Expected {", open_if);
 
-                DoIfTrue = new List<StatetmentBase>();
+                
                 while(sTokens.Count > 0 & !(sTokens.Peek() is Parentheses))
                 {
                     StatetmentBase statetmentBase = StatetmentBase.Create(sTokens.Peek());
@@ -66,7 +68,7 @@ namespace SimpleCompiler
                     if (!(open_else is Parentheses) || ((Parentheses)open_else).Name != '{')
                         throw new SyntaxErrorException("$Expected {", open_else);
 
-                    DoIfFalse = new List<StatetmentBase>();
+                    
                     while (sTokens.Count > 0 & !(sTokens.Peek() is Parentheses))
                     {
                         StatetmentBase statetmentBase = StatetmentBase.Create(sTokens.Peek());

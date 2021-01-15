@@ -35,7 +35,7 @@ namespace SimpleCompiler
             if (!(tOperator is Operator))
                 throw new SyntaxErrorException("$Expected operator ", tOperator);
             else
-                Operator = "" + ((Operator)tOperator).Name;
+                Operator = ((Operator)tOperator).Name.ToString();
 
 
             Operand2 = Expression.Create(sTokens);

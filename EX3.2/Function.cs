@@ -78,6 +78,8 @@ namespace SimpleCompiler
                 //And call the Parse method of the statement to parse the different parts of the statement 
                 s.Parse(sTokens);
                 Body.Add(s);
+                if (sTokens.Count > 0 && sTokens.Peek() is Separator)//,
+                    sTokens.Pop();
             }
             //Need to check here that the last statement is a return statement
             /********************************************************************************************************************************************/

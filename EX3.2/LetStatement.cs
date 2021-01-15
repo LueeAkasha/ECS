@@ -26,7 +26,7 @@ namespace SimpleCompiler
             if (!(tId is Identifier))
                 throw new SyntaxErrorException("$Expected identifier", tId);
             else
-                this.Variable = ((Identifier)tId).Name;
+                this.Variable = ((Identifier)tId).ToString();
 
             Token tEqual = sTokens.Pop();
             if (!(tEqual is Operator) || ((Operator)tEqual).Name != '=')

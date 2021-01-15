@@ -27,3 +27,14 @@ D:\Teaching\ECS\2017\Ex3.2\SimpleCompiler\obj\Debug\SimpleCompiler.csproj.CoreCo
 D:\Teaching\ECS\2017\Ex3.2\SimpleCompiler\obj\Debug\ExpressionCompiler.exe
 D:\Teaching\ECS\2017\Ex3.2\SimpleCompiler\obj\Debug\ExpressionCompiler.pdb
 D:\Teaching\ECS\2017\Ex3.2\SimpleCompiler\obj\Debug\SimpleCompiler.csprojResolveAssemblyReference.cache
+C:\Users\luee\Desktop\EX3.2\obj\Debug\SimpleCompiler.csprojAssemblyReference.cache
+C:\Users\luee\Desktop\EX3.2\obj\Debug\SimpleCompiler.csproj.CoreCompileInputs.cache
+C:\Users\luee\Desktop\EX3.2\obj\Debug\ExpressionCompiler.exe
+C:\Users\luee\Desktop\EX3.2\obj\Debug\ExpressionCompiler.pdb
+C:\Users\luee\Desktop\EX3.2\bin\Debug\ExpressionCompiler.exe.config
+C:\Users\luee\Desktop\EX3.2\bin\Debug\ExpressionCompiler.exe
+C:\Users\luee\Desktop\EX3.2\bin\Debug\ExpressionCompiler.pdb
+C:\Users\luee\Documents\GitHub\ECS\EX3.2\obj\Debug\SimpleCompiler.csprojAssemblyReference.cache
+C:\Users\luee\Documents\GitHub\ECS\EX3.2\obj\Debug\SimpleCompiler.csproj.CoreCompileInputs.cache
+C:\Users\luee\Documents\GitHub\ECS\EX3.2\obj\Debug\ExpressionCompiler.exe
+C:\Users\luee\Documents\GitHub\ECS\EX3.2\obj\Debug\ExpressionCompiler.pdb
