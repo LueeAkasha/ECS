@@ -83,8 +83,8 @@ namespace SimpleCompiler
             /********************************************************************************************************************************************/
             //Finally, the function should end with }
             Token tEnd = sTokens.Pop();//}
-            if (!(tEnd is Parentheses) || !((Parentheses)tEnd).Name.Equals("}"))
-                throw new SyntaxErrorException("$Expected }", tEnd);
+            if (!(tEnd is Parentheses) || ((Parentheses)tEnd).Name != '}')
+                throw new SyntaxErrorException("$Expected }" + tEnd.ToString(), tEnd);
         }
 
         public override string ToString()

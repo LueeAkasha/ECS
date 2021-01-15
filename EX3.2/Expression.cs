@@ -12,7 +12,7 @@ namespace SimpleCompiler
         public static Expression Create(TokensStack sTokens)
         {
             if(sTokens.Count < 3)
-                throw new SyntaxErrorException("Expected expression", null);
+                throw new SyntaxErrorException("Expected expression" + sTokens.Count+ "  --- > 1", null);
             Token tFirst = sTokens.Peek(0);
             Token tSecond = sTokens.Peek(1);
             Token tThird = sTokens.Peek(2);
@@ -28,7 +28,7 @@ namespace SimpleCompiler
                 return new VariableExpression();
             if (tFirst is Number)
                 return new NumericExpression();
-            throw new SyntaxErrorException("Expected expression", tFirst);
+            throw new SyntaxErrorException("Expected expression" + tFirst.ToString() + "-----> 2", tFirst);
         }
     }
 }

@@ -29,16 +29,16 @@ namespace SimpleCompiler
                 this.Variable = ((Identifier)tId).Name;
 
             Token tEqual = sTokens.Pop();
-            if (!(tEqual is Operator) || !((Operator)tEqual).Name.Equals("="))
+            if (!(tEqual is Operator) || ((Operator)tEqual).Name != '=')
                 throw new SyntaxErrorException("$Expected =",tEqual);
 
 
             Value = Expression.Create(sTokens);
             Value.Parse(sTokens);
 
-            Token tEnd = sTokens.Pop();
-            if (!(tEnd is Separator) || !((Separator)tEnd).Name.Equals(";"))
-                throw new SyntaxErrorException("$Expected ;", tEnd);
+           // Token tEnd = sTokens.Pop();
+            //if (!(tEnd is Separator) || ((Separator)tEnd).Name != ';')
+              //  throw new SyntaxErrorException("$Expected ;" + tEnd.ToString(), tEnd);
         }
 
     }

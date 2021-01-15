@@ -19,8 +19,35 @@ namespace SimpleCompiler
 
         public override void Parse(TokensStack sTokens)
         {
-            throw new NotImplementedException();
+            Token open = sTokens.Pop();
+            if (!(open is Parentheses) || ((Parentheses)open).Name!='(' )
+                throw new SyntaxErrorException("$Expected (" + open, open);
 
+            Operand1 = Expression.Create(sTokens);
+            Operand1.Parse(sTokens);
+
+           // while (!(sTokens.Peek() is Operator))
+          //  {
+          //      sTokens.Pop();
+         //   }
+
+            Token tOperator = sTokens.Pop();
+            if (!(tOperator is Operator))
+                throw new SyntaxErrorException("$Expected operator ", tOperator);
+            else
+                Operator = "" + ((Operator)tOperator).Name;
+
+
+            Operand2 = Expression.Create(sTokens);
+            Operand2.Parse(sTokens);
+
+            //while (!(sTokens.Peek() is Parentheses))
+           // {
+          //      sTokens.Pop();
+          //  }
+            Token close = sTokens.Pop();
+            if (!(close is Parentheses) || ((Parentheses)close).Name != ')')
+                throw new SyntaxErrorException("$Expected )", close);
         }
     }
 }

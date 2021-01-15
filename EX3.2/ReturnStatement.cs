@@ -22,9 +22,10 @@ namespace SimpleCompiler
             Expression = Expression.Create(sTokens);
             //We transfer responsibility of the parsing to the created expression
             Expression.Parse(sTokens);
+
             //After the expression was parsed, we expect to see ;
             Token tEnd = sTokens.Pop();//;
-            if (!(tEnd is Separator) || !((Separator)tEnd).Name.Equals(";"))
+            if (!(tEnd is Separator) || ((Separator)tEnd).Name != ';')
                 throw new SyntaxErrorException("$Expected ;", tEnd);
         }
 

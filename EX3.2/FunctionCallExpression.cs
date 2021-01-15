@@ -15,14 +15,22 @@ namespace SimpleCompiler
                 throw new SyntaxErrorException("$Expected identifier", tFun);
 
             Token fun_open = sTokens.Pop();
-            if (!(fun_open is Parentheses) || !((Parentheses)fun_open).Name.Equals("("))
+            if (!(fun_open is Parentheses) || ((Parentheses)fun_open).Name != '(')
                 throw new SyntaxErrorException("$Expected (", fun_open);
 
-            while (sTokens.Count>0 && !(sTokens.Peek() is Parentheses)) {
+            Args = new List<Expression>();
+            // problematic scope!
+            while (sTokens.Count >2  && !(sTokens.Peek() is Parentheses && sTokens.Peek(1) is Separator && ((Separator)sTokens.Peek(1)).Name==';' ) ) {
+
+                while (sTokens.Count > 2 && sTokens.Peek() is Parentheses)
+                    sTokens.Pop();
+                if (sTokens.Count > 2 && sTokens.Peek() is Separator)//,
+                    sTokens.Pop();
 
                 Expression arg = Expression.Create(sTokens);
                 arg.Parse(sTokens);
                 Args.Add(arg);
+                
 
                 if (sTokens.Count > 0 && sTokens.Peek() is Separator)//,
                     sTokens.Pop();
@@ -34,11 +42,11 @@ namespace SimpleCompiler
 
 
             Token fun_close = sTokens.Pop();
-            if (!(fun_close is Parentheses) || !((Parentheses)fun_close).Name.Equals(")"))
-                throw new SyntaxErrorException("$Expected )", fun_close);
+            if (!(fun_close is Parentheses) || ((Parentheses)fun_close).Name != ')')
+                throw new SyntaxErrorException("$Expected )" + fun_close.ToString() +"  "+ sTokens.Pop().ToString() + "  " + sTokens.Pop().ToString() + "  " + sTokens.Pop().ToString(), fun_close);
 
             Token tEnd = sTokens.Pop();
-            if(!(tEnd is Separator) || !((Separator)tEnd).Name.Equals(";"))
+            if (!(tEnd is Separator) || ((Separator)tEnd).Name != ';')
                     throw new SyntaxErrorException("$Expected ;", tEnd);
         }
 

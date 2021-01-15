@@ -21,55 +21,65 @@ namespace SimpleCompiler
                     throw new SyntaxErrorException("$Expected if", tIf);
 
                 Token con_open = sTokens.Pop();
-                if (!(con_open is Parentheses) || !((Parentheses)con_open).Name.Equals("("))
+                if (!(con_open is Parentheses) || ((Parentheses)con_open).Name != '(')
                     throw new SyntaxErrorException("$Expected (", con_open);
 
                 Term = Expression.Create(sTokens);
                 Term.Parse(sTokens);
-
+               /* while (!(sTokens.Peek() is Parentheses))
+                {
+                    sTokens.Pop();
+                }*/
                 Token con_close = sTokens.Pop();
-                if (!(con_close is Parentheses) || !((Parentheses)con_close).Name.Equals(")"))
+                if (!(con_close is Parentheses) || ((Parentheses)con_close).Name != ')')
                     throw new SyntaxErrorException("$Expected )", con_close);
 
                 Token open_if = sTokens.Pop();
-                if (!(open_if is Parentheses) || !((Parentheses)open_if).Name.Equals("{"))
+                if (!(open_if is Parentheses) || ((Parentheses)open_if).Name != '{')
                     throw new SyntaxErrorException("$Expected {", open_if);
-                
+
+                DoIfTrue = new List<StatetmentBase>();
                 while(sTokens.Count > 0 & !(sTokens.Peek() is Parentheses))
                 {
                     StatetmentBase statetmentBase = StatetmentBase.Create(sTokens.Peek());
                     statetmentBase.Parse(sTokens);
                     DoIfTrue.Add(statetmentBase);
+
+                    if (sTokens.Count > 0 && sTokens.Peek() is Separator)//,
+                        sTokens.Pop();
+
                 }
 
                 Token close_if = sTokens.Pop();
-                if (!(close_if is Parentheses) || !((Parentheses)close_if).Name.Equals("}"))
+                if (!(close_if is Parentheses) || ((Parentheses)close_if).Name != '}')
                     throw new SyntaxErrorException("$Expected }", close_if);
 
                 if ((sTokens.Peek() is Statement) && ((Statement)sTokens.Peek()).Name.Equals("else"))
                 {
 
                     Token tElse = sTokens.Pop();
-                    if (!(tIf is Statement) || !((Statement)tIf).Name.Equals("else"))
-                        throw new SyntaxErrorException("$Expected else", tElse);
+                    if (!(tElse is Statement) || !((Statement)tElse).Name.Equals("else"))
+                        throw new SyntaxErrorException("$Expected else" + tElse.ToString(), tElse);
 
 
                     Token open_else = sTokens.Pop(); // not must
-
-                    if (!(open_else is Parentheses) || !((Parentheses)open_else).Name.Equals("{"))
+                    if (!(open_else is Parentheses) || ((Parentheses)open_else).Name != '{')
                         throw new SyntaxErrorException("$Expected {", open_else);
 
-
+                    DoIfFalse = new List<StatetmentBase>();
                     while (sTokens.Count > 0 & !(sTokens.Peek() is Parentheses))
                     {
                         StatetmentBase statetmentBase = StatetmentBase.Create(sTokens.Peek());
                         statetmentBase.Parse(sTokens);
                         DoIfFalse.Add(statetmentBase);
+
+                        if (sTokens.Count > 0 && sTokens.Peek() is Separator)//,
+                            sTokens.Pop();
                     }
 
 
                     Token close_else = sTokens.Pop();
-                    if (!(close_else is Parentheses) || !((Parentheses)close_else).Name.Equals("}"))
+                    if (!(close_else is Parentheses) || ((Parentheses)close_else).Name != '}')
                         throw new SyntaxErrorException("$Expected }", close_else);
                 }
             }

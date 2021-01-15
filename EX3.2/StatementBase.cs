@@ -27,10 +27,10 @@ namespace SimpleCompiler
 
                 StatetmentBase se = Create(s.Name);
                 if (se == null)
-                    throw new SyntaxErrorException("Expected statement type", t);
+                    throw new SyntaxErrorException("Expected statement type" + t.ToString() + "1", t);
                 return se;
             }
-            throw new SyntaxErrorException("Expected statement type", t);
+            throw new SyntaxErrorException("Expected statement type" + t.ToString() + "2", t);
         }
     }
 }

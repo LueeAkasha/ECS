@@ -18,28 +18,37 @@ namespace SimpleCompiler
                 throw new SyntaxErrorException("$Expected while", tWhile);
 
             Token con_open = sTokens.Pop();
-            if (!(con_open is Parentheses) || !((Parentheses)con_open).Name.Equals("("))
+            if (!(con_open is Parentheses) || ((Parentheses)con_open).Name != '(' )
                 throw new SyntaxErrorException("$Expected (", con_open);
 
             Term = Expression.Create(sTokens);
             Term.Parse(sTokens);
 
+            /*while (!(sTokens.Peek() is Parentheses))
+            {
+                sTokens.Pop();
+            }*/
+
             Token con_close = sTokens.Pop();
-            if (!(con_close is Parentheses) || !((Parentheses)con_close).Name.Equals(")"))
+            if (!(con_close is Parentheses) || ((Parentheses)con_close).Name != ')')
                 throw new SyntaxErrorException("$Expected )", con_close);
 
             Token while_open = sTokens.Pop();
-            if (!(while_open is Parentheses) || !((Parentheses)while_open).Name.Equals("{"))
+            if (!(while_open is Parentheses) || ((Parentheses)while_open).Name != '{')
                 throw new SyntaxErrorException("$Expected {", while_open);
 
+            Body = new List<StatetmentBase>();
             while (sTokens.Count > 0 & !(sTokens.Peek() is Parentheses))
             {
                 StatetmentBase statetmentBase = StatetmentBase.Create(sTokens.Peek());
                 statetmentBase.Parse(sTokens);
                 Body.Add(statetmentBase);
+
+                if (sTokens.Count > 0 && sTokens.Peek() is Separator)//,
+                    sTokens.Pop();
             }
             Token while_close = sTokens.Pop();
-            if (!(while_close is Parentheses) || !((Parentheses)while_close).Name.Equals("}"))
+            if (!(while_close is Parentheses) || ((Parentheses)while_close).Name !='}')
                 throw new SyntaxErrorException("$Expected }", while_close);
         }
 
