@@ -18,7 +18,7 @@ namespace SimpleCompiler
             Token tThird = null;
             if( sTokens.Count > 2)
                 tThird = sTokens.Peek(2);
-
+            
             if (tFirst is Identifier)
                 return new VariableExpression();
             if (tFirst is Number)

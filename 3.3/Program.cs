@@ -28,19 +28,27 @@ namespace SimpleCompiler
             string s = "let x = 5;";
             List<Token> lTokens = c.Tokenize(s, 0);
             LetStatement assignment = c.ParseStatement(lTokens);
-            if(assignment.ToString() != s)
+            if (assignment.ToString() != s)
+            {
                 Console.WriteLine("BUGBUG");
-
+            }
 
             List<LetStatement> l = new List<LetStatement>();
             l.Add(assignment);
+            Console.WriteLine("new leeeeeeeeeeeeeeeet:   "+l[0].ToString());
+
             List<string> lAssembly = c.GenerateCode(l, vars);
             CPUEmulator cpu = new CPUEmulator();
             InitLCL(lAssembly);
             cpu.Code = lAssembly;
             cpu.Run(1000, false);
             if (cpu.M[20] != 5)
+            {
+                Console.WriteLine(cpu.M[20] + "  instead of :  " + 5 + " ..2");
                 Console.WriteLine("BUGBUG");
+            }
+            else
+                Console.WriteLine("Well done!");
         }
 
         static void Test2()
@@ -56,7 +64,6 @@ namespace SimpleCompiler
             lAssignments.Add("let x = 10;");
             lAssignments.Add("let y = 15;");
             lAssignments.Add("let z = (x + y);");
-
             List<LetStatement> ls = c.ParseAssignments(lAssignments);
 
 
@@ -66,7 +73,12 @@ namespace SimpleCompiler
             cpu.Code = lAssembly;
             cpu.Run(1000, false);
             if (cpu.M[22] != 25)
+            {
+                Console.WriteLine(cpu.M[22] + "  instead of :  " + 10 + " ...................2");
                 Console.WriteLine("BUGBUG");
+            }
+            else
+                Console.WriteLine("Well done!");
         }
         static void Test3()
         {
@@ -155,8 +167,9 @@ namespace SimpleCompiler
         {
             Test1();
             Test2();
-           // Test3();
+            // Test3();
             //TestParseAndErrors();
+            Console.Read();
         }
 
  

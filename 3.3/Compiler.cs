@@ -54,70 +54,202 @@ namespace SimpleCompiler
 
         public List<string> GenerateCode(LetStatement aSimple, Dictionary<string, int> dSymbolTable)
         {
+            //Console.WriteLine("HI------------------------------------------------------------");
             List<string> lAssembly = new List<string>();
-            //add here code for computing a single let statement containing only a simple expression
-           
 
-            if (aSimple.Value is NumericExpression) {
-                lAssembly.Add("@" + ((NumericExpression)aSimple.Value).Value);
+            if (aSimple.Value is NumericExpression)
+            {
+                lAssembly.Add("@" + ((NumericExpression)aSimple.Value).Value.ToString());
                 lAssembly.Add("D=A");
+                lAssembly.Add("@RESULT");
+                lAssembly.Add("M=D");
+
+
+
             }
-            else if (aSimple.Value is BinaryOperationExpression) {
-                if (((BinaryOperationExpression)aSimple.Value).Operand1 is VariableExpression && !dSymbolTable.ContainsKey(((BinaryOperationExpression)aSimple.Value).Operand1.ToString()))
-                    throw new Exception(((BinaryOperationExpression)aSimple.Value).Operand1 + " Was not defind!");
-                lAssembly.Add("@" + ((BinaryOperationExpression)aSimple.Value).Operand1.ToString());
-                lAssembly.Add("D=A");
-                lAssembly.Add("@OPERAND1");
-                lAssembly.Add("M=D");
 
-                    if (((BinaryOperationExpression)aSimple.Value).Operand1 is VariableExpression && !dSymbolTable.ContainsKey(((BinaryOperationExpression)aSimple.Value).Operand2.ToString()))
-                        throw new Exception(((BinaryOperationExpression)aSimple.Value).Operand2 + " Was not defind!");
-                lAssembly.Add("@" + ((BinaryOperationExpression)aSimple.Value).Operand2);
-                lAssembly.Add("D=A");
-                lAssembly.Add("@OPERAND2");
-                lAssembly.Add("M=D");
+            else if (aSimple.Value is BinaryOperationExpression)
+            {
 
 
+
+                if ((((BinaryOperationExpression)aSimple.Value).Operand1 is NumericExpression) && (((BinaryOperationExpression)aSimple.Value).Operand2 is NumericExpression))
+                {
+
+                    lAssembly.Add("@" + ((BinaryOperationExpression)aSimple.Value).Operand1);
+                    lAssembly.Add("D=A");
+                    lAssembly.Add("@OPERAND1");
+                    lAssembly.Add("M=D");
+
+                    lAssembly.Add("@" + ((BinaryOperationExpression)aSimple.Value).Operand2);
+                    lAssembly.Add("D=A");
+                    lAssembly.Add("@OPERAND2");
+                    lAssembly.Add("M=D");
+
+
+                   
+                }
+                else if ((((BinaryOperationExpression)aSimple.Value).Operand1 is VariableExpression) && (((BinaryOperationExpression)aSimple.Value).Operand2 is VariableExpression))
+                {
+
+                    lAssembly.Add("@" + dSymbolTable[((BinaryOperationExpression)aSimple.Value).Operand1.ToString()]);
+                    lAssembly.Add("D=A");
+                    lAssembly.Add("@LCL");
+                    lAssembly.Add("D=D+M");
+                    lAssembly.Add("A=D");
+                    lAssembly.Add("D=M");
+                    lAssembly.Add("@OPERAND1");
+                    lAssembly.Add("M=D");
+
+
+                    lAssembly.Add("@" + dSymbolTable[((BinaryOperationExpression)aSimple.Value).Operand2.ToString()]);
+                    lAssembly.Add("D=A");
+                    lAssembly.Add("@LCL");
+                    lAssembly.Add("D=D+M");
+                    lAssembly.Add("A=D");
+                    lAssembly.Add("D=M");
+                    lAssembly.Add("@OPERAND2");
+                    lAssembly.Add("M=D");
+
+
+                   
+
+                    
+
+                }
+                else if ((((BinaryOperationExpression)aSimple.Value).Operand1 is VariableExpression) && (((BinaryOperationExpression)aSimple.Value).Operand2 is NumericExpression))
+                {
+
+
+                    lAssembly.Add("@" + dSymbolTable[((BinaryOperationExpression)aSimple.Value).Operand1.ToString()]);
+                    lAssembly.Add("D=A");
+                    lAssembly.Add("@LCL");
+                    lAssembly.Add("D=D+M");
+                    lAssembly.Add("A=D");
+                    lAssembly.Add("D=M");
+                    lAssembly.Add("@OPERAND1");
+                    lAssembly.Add("M=D");
+
+
+                    lAssembly.Add("@" + ((BinaryOperationExpression)aSimple.Value).Operand2);
+                    lAssembly.Add("D=A");
+                    lAssembly.Add("@OPERAND2");
+                    lAssembly.Add("M=D");
+
+
+
+
+                 
+                }
+                else if ((((BinaryOperationExpression)aSimple.Value).Operand1 is NumericExpression) && (((BinaryOperationExpression)aSimple.Value).Operand2 is VariableExpression))
+                {
+
+                    lAssembly.Add("@" + ((BinaryOperationExpression)aSimple.Value).Operand1);
+                    lAssembly.Add("D=A");
+                    lAssembly.Add("@OPERAND1");
+                    lAssembly.Add("M=D");
+
+                    lAssembly.Add("@" + dSymbolTable[((BinaryOperationExpression)aSimple.Value).Operand2.ToString()]);
+                    lAssembly.Add("D=A");
+                    lAssembly.Add("@LCL");
+                    lAssembly.Add("D=D+M");
+                    lAssembly.Add("A=D");
+                    lAssembly.Add("D=M");
+                    lAssembly.Add("@OPERAND2");
+                    lAssembly.Add("M=D");
+
+                    
+                }
+                else
+                {
+                    throw new Exception("This kind of expressions is not supported yet!");
+                }
+
+
+
+                /* This part is fixed! */
                 lAssembly.Add("@OPERAND1");
                 lAssembly.Add("D=M");
                 lAssembly.Add("@OPERAND2");
-                lAssembly.Add("D=D" + ((BinaryOperationExpression)aSimple.Value).Operator.ToString() + "M");
-                
+                lAssembly.Add("D=D" + ((BinaryOperationExpression)aSimple.Value).Operator + "M");
+                lAssembly.Add("@RESULT");
+                lAssembly.Add("M=D");
+
+
+
             }
-            else if (aSimple.Value is UnaryOperatorExpression) {
-                if (!dSymbolTable.ContainsKey(((UnaryOperatorExpression)aSimple.Value).Operand.ToString()))
-                    throw new Exception(((UnaryOperatorExpression)aSimple.Value).Operand + " Was not defind!");
-                lAssembly.Add("@"+ ((UnaryOperatorExpression)aSimple.Value).Operand);
-                lAssembly.Add("D=A");
-                lAssembly.Add("D="+((UnaryOperatorExpression)aSimple.Value).Operator+"D");
+
+            else if (aSimple.Value is UnaryOperatorExpression)
+            {
+                if (((UnaryOperatorExpression)aSimple.Value).Operand is VariableExpression) {
+                    lAssembly.Add("@" + dSymbolTable[(((UnaryOperatorExpression)aSimple.Value).Operand).ToString()]);
+                    lAssembly.Add("D=A");
+                    lAssembly.Add("@LCL");
+                    lAssembly.Add("D=D+M");
+                    lAssembly.Add("A=D");
+                    lAssembly.Add("D=M");
+                    lAssembly.Add("@OPERAND1");
+                    lAssembly.Add("M=D");
+
+
+                    lAssembly.Add("@OPERAND1");
+                    lAssembly.Add("D=M");
+                    lAssembly.Add("D=" + ((UnaryOperatorExpression)aSimple.Value).Operator + "D");
+                    lAssembly.Add("@RESULT");
+                    lAssembly.Add("M=D");
+                    
+                }
+                else if (((UnaryOperatorExpression)aSimple.Value).Operand is NumericExpression) {
+
+                    lAssembly.Add("@" + (((UnaryOperatorExpression)aSimple.Value).Operand).ToString());
+                    lAssembly.Add("D=A");
+                    
+
+
+                    lAssembly.Add("D=A");
+                    lAssembly.Add("D="+ ((UnaryOperatorExpression)aSimple.Value).Operator + "D");
+                    lAssembly.Add("@RESULT");
+                    lAssembly.Add("M=D");
+
+
+                }
+                else { throw new Exception("This kind of expressions is not supported yet!"); }
+
             }
+
             else if (aSimple.Value is VariableExpression)
             {
-                if (!dSymbolTable.ContainsKey(((VariableExpression)aSimple.Value).Name))
-                    throw new Exception(dSymbolTable.ContainsKey(((VariableExpression)aSimple.Value).Name) + " was not defind!");
-                lAssembly.Add("@"+ ((VariableExpression)aSimple.Value).Name);
+
+                //throw new Exception("Heeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeey!");
+                lAssembly.Add("@" + dSymbolTable[((VariableExpression)aSimple.Value).Name]);
+                lAssembly.Add("D=A");
+                lAssembly.Add("@LCL");
+                lAssembly.Add("D=D+M");
+                lAssembly.Add("A=D");
                 lAssembly.Add("D=M");
-            }
-            else {
-                throw new Exception(aSimple.Value.GetType() + " is not supported yet!");
-            }
+                lAssembly.Add("@RESULT");
+                lAssembly.Add("M=D");
 
-            if(!dSymbolTable.ContainsKey(aSimple.Variable))
-                throw new Exception(aSimple.Variable + " Was not defind!");
-            lAssembly.Add("@"+aSimple.Variable);
-            lAssembly.Add("M=D");
 
-            lAssembly.Add("@RESULT");
+                
+            }
+            else
+                throw new Exception("This kind of expressions is not supported yet!");
+
+
+
+            lAssembly.Add("@" + dSymbolTable[aSimple.Variable]);
+            lAssembly.Add("D=A");
+            lAssembly.Add("@LCL");
+            lAssembly.Add("D=D+M");
+            lAssembly.Add("@ADDRESS");
             lAssembly.Add("M=D");
+            lAssembly.Add("D=M");
             lAssembly.Add("@RESULT");
             lAssembly.Add("D=M");
             lAssembly.Add("@ADDRESS");
             lAssembly.Add("A=M");
             lAssembly.Add("M=D");
-
-
-            
-            
 
             return lAssembly;
         }
