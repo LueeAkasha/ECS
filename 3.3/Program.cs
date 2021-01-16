@@ -169,6 +169,7 @@ namespace SimpleCompiler
             Test2();
             // Test3();
             //TestParseAndErrors();
+            Test4();
             Console.Read();
         }
 

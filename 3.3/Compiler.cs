@@ -294,9 +294,48 @@ namespace SimpleCompiler
 
         public List<LetStatement> SimplifyExpressions(LetStatement s, List<VarDeclaration> lVars)
         {
+
+            List<LetStatement> letStatements = new List<LetStatement>();
+            //LetStatement temp = s;
             //add here code to simply expressins in a statement. 
             //add var declarations for artificial variables.
-            return null;
+
+            if (s.Value is UnaryOperatorExpression) {
+                letStatements.Add(s);
+            }
+            else if (s.Value is BinaryOperationExpression)
+            {
+                LetStatement left_let = new LetStatement();
+
+                VarDeclaration varDeclaration = new VarDeclaration();
+                //varDeclaration.Name = "_"+lVars.Count;
+                left_let.Variable = 
+                //lVars.Add));
+                //left_let.Value = ((BinaryOperationExpression)s.Value).Operand1;
+                // send to 
+                List<LetStatement> left_simplified_statements = SimplifyExpressions(left_let, lVars);
+
+
+                LetStatement right_let = new LetStatement();
+                right_let.Variable = lVars[0].Name;
+                lVars.RemoveAt(0);
+                right_let.Value = ((BinaryOperationExpression)s.Value).Operand2;
+                List<LetStatement> right_simplified_statements = SimplifyExpressions(right_let, lVars);
+
+              
+
+                foreach(LetStatement letStatement in left_simplified_statements)
+                {
+                    letStatements.Add(letStatement);
+                }
+
+                foreach (LetStatement letStatement in right_simplified_statements)
+                {
+                    letStatements.Add(letStatement);
+                }
+            }
+
+            return letStatements;
         }
         public List<LetStatement> SimplifyExpressions(List<LetStatement> ls, List<VarDeclaration> lVars)
         {
