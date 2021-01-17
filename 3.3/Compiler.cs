@@ -56,6 +56,7 @@ namespace SimpleCompiler
         {
             //Console.WriteLine("HI------------------------------------------------------------");
             List<string> lAssembly = new List<string>();
+            
 
             if (aSimple.Value is NumericExpression)
             {
@@ -91,7 +92,11 @@ namespace SimpleCompiler
                 }
                 else if ((((BinaryOperationExpression)aSimple.Value).Operand1 is VariableExpression) && (((BinaryOperationExpression)aSimple.Value).Operand2 is VariableExpression))
                 {
-
+                    if (!dSymbolTable.ContainsKey(((BinaryOperationExpression)aSimple.Value).Operand1.ToString()))
+                    {
+                        Identifier id = new Identifier(((BinaryOperationExpression)aSimple.Value).Operand1.ToString(), 0, 0);
+                        throw new SyntaxErrorException(id.ToString() + "$was not found!", id);
+                    }
                     lAssembly.Add("@" + dSymbolTable[((BinaryOperationExpression)aSimple.Value).Operand1.ToString()]);
                     lAssembly.Add("D=A");
                     lAssembly.Add("@LCL");
@@ -102,6 +107,11 @@ namespace SimpleCompiler
                     lAssembly.Add("M=D");
 
 
+                    if (!dSymbolTable.ContainsKey(((BinaryOperationExpression)aSimple.Value).Operand2.ToString()))
+                    {
+                        Identifier id = new Identifier(((BinaryOperationExpression)aSimple.Value).Operand2.ToString(), 0, 0);
+                        throw new SyntaxErrorException(id.ToString() + "$was not found!", id);
+                    }
                     lAssembly.Add("@" + dSymbolTable[((BinaryOperationExpression)aSimple.Value).Operand2.ToString()]);
                     lAssembly.Add("D=A");
                     lAssembly.Add("@LCL");
@@ -120,7 +130,11 @@ namespace SimpleCompiler
                 else if ((((BinaryOperationExpression)aSimple.Value).Operand1 is VariableExpression) && (((BinaryOperationExpression)aSimple.Value).Operand2 is NumericExpression))
                 {
 
-
+                    if (!dSymbolTable.ContainsKey(((BinaryOperationExpression)aSimple.Value).Operand1.ToString()))
+                    {
+                        Identifier id = new Identifier(((BinaryOperationExpression)aSimple.Value).Operand1.ToString(), 0, 0);
+                        throw new SyntaxErrorException(id.ToString() + "$was not found!", id);
+                    }
                     lAssembly.Add("@" + dSymbolTable[((BinaryOperationExpression)aSimple.Value).Operand1.ToString()]);
                     lAssembly.Add("D=A");
                     lAssembly.Add("@LCL");
@@ -149,6 +163,11 @@ namespace SimpleCompiler
                     lAssembly.Add("@OPERAND1");
                     lAssembly.Add("M=D");
 
+                    if (!dSymbolTable.ContainsKey(((BinaryOperationExpression)aSimple.Value).Operand2.ToString()))
+                    {
+                        Identifier id = new Identifier(((BinaryOperationExpression)aSimple.Value).Operand2.ToString(), 0, 0);
+                        throw new SyntaxErrorException(id.ToString() + "$was not found!", id);
+                    }
                     lAssembly.Add("@" + dSymbolTable[((BinaryOperationExpression)aSimple.Value).Operand2.ToString()]);
                     lAssembly.Add("D=A");
                     lAssembly.Add("@LCL");
@@ -182,6 +201,12 @@ namespace SimpleCompiler
             else if (aSimple.Value is UnaryOperatorExpression)
             {
                 if (((UnaryOperatorExpression)aSimple.Value).Operand is VariableExpression) {
+
+                    if (!dSymbolTable.ContainsKey(((UnaryOperatorExpression)aSimple.Value).Operand.ToString()))
+                    {
+                        Identifier id = new Identifier(((UnaryOperatorExpression)aSimple.Value).Operand.ToString(), 0, 0);
+                        throw new SyntaxErrorException(id.ToString() + "$was not found!", id);
+                    }
                     lAssembly.Add("@" + dSymbolTable[(((UnaryOperatorExpression)aSimple.Value).Operand).ToString()]);
                     lAssembly.Add("D=A");
                     lAssembly.Add("@LCL");
@@ -221,6 +246,12 @@ namespace SimpleCompiler
             {
 
                 //throw new Exception("Heeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeey!");
+
+                if (!dSymbolTable.ContainsKey(((VariableExpression)aSimple.Value).Name.ToString()))
+                {
+                    Identifier id = new Identifier(((VariableExpression)aSimple.Value).Name.ToString(), 0, 0);
+                    throw new SyntaxErrorException(id.ToString() + "$was not found!", id);
+                }
                 lAssembly.Add("@" + dSymbolTable[((VariableExpression)aSimple.Value).Name]);
                 lAssembly.Add("D=A");
                 lAssembly.Add("@LCL");
@@ -237,7 +268,11 @@ namespace SimpleCompiler
                 throw new Exception("This kind of expressions is not supported yet!");
 
 
-
+            if (!dSymbolTable.ContainsKey(aSimple.Variable))
+            {
+                Identifier id = new Identifier(aSimple.Variable, 0, 0);
+                throw new SyntaxErrorException(id.ToString() + "$was not found!", id);
+            }
             lAssembly.Add("@" + dSymbolTable[aSimple.Variable]);
             lAssembly.Add("D=A");
             lAssembly.Add("@LCL");
@@ -257,20 +292,31 @@ namespace SimpleCompiler
 
         public Dictionary<string, int> ComputeSymbolTable(List<VarDeclaration> lDeclerations)
         {
+            
             Dictionary<string, int> dTable = new Dictionary<string, int>();
             //add here code to comptue a symbol table for the given var declarations
             Queue<VarDeclaration> artificial_vars = new Queue<VarDeclaration>();
+
             for (int i = 0; i < lDeclerations.Count; i++)
             {
-                if (lDeclerations[i].Name[0]=='_') {
+                if (lDeclerations[i].Name[0] == '_')
+                {
                     artificial_vars.Enqueue(lDeclerations[i]);
                 }
                 else
-                    dTable.Add(lDeclerations[i].Name , dTable.Count);
+                {
+                    if (!dTable.ContainsKey(lDeclerations[i].Name))
+                        dTable.Add(lDeclerations[i].Name, dTable.Count);
+                    else
+                        throw new SyntaxErrorException("was declared before!", new Identifier(lDeclerations[i].Name, 0, 0));
+                }
             }
             while(artificial_vars.Count > 0)
             {
-                dTable.Add(artificial_vars.Dequeue().Name, dTable.Count);
+                if (!dTable.ContainsKey(artificial_vars.Peek().Name))
+                    dTable.Add(artificial_vars.Dequeue().Name, dTable.Count);
+                else
+                    throw new SyntaxErrorException("was declared before!", new Identifier(artificial_vars.Peek().Name,0,0));
             }
             //real vars should come before (lower indexes) than artificial vars (starting with _), and their indexes must be by order of appearance.
             //for example, given the declarations:
@@ -294,47 +340,53 @@ namespace SimpleCompiler
 
         public List<LetStatement> SimplifyExpressions(LetStatement s, List<VarDeclaration> lVars)
         {
-
+            
             List<LetStatement> letStatements = new List<LetStatement>();
             //LetStatement temp = s;
             //add here code to simply expressins in a statement. 
             //add var declarations for artificial variables.
 
-            if (s.Value is UnaryOperatorExpression) {
+
+            if (s.Value is NumericExpression || s.Value is VariableExpression)
+            {
                 letStatements.Add(s);
             }
             else if (s.Value is BinaryOperationExpression)
             {
-                LetStatement left_let = new LetStatement();
 
-                VarDeclaration varDeclaration = new VarDeclaration();
-                //varDeclaration.Name = "_"+lVars.Count;
-                left_let.Variable = 
-                //lVars.Add));
-                //left_let.Value = ((BinaryOperationExpression)s.Value).Operand1;
-                // send to 
-                List<LetStatement> left_simplified_statements = SimplifyExpressions(left_let, lVars);
-
-
-                LetStatement right_let = new LetStatement();
-                right_let.Variable = lVars[0].Name;
-                lVars.RemoveAt(0);
-                right_let.Value = ((BinaryOperationExpression)s.Value).Operand2;
-                List<LetStatement> right_simplified_statements = SimplifyExpressions(right_let, lVars);
-
-              
-
-                foreach(LetStatement letStatement in left_simplified_statements)
+                if (((BinaryOperationExpression)s.Value).Operand1 is BinaryOperationExpression)
                 {
-                    letStatements.Add(letStatement);
+                    VarDeclaration var_dec = new VarDeclaration("int", "_" + (lVars.Count+1));
+                    lVars.Add(var_dec);
+                    LetStatement left_let_statement = new LetStatement();
+                    left_let_statement.Variable = var_dec.Name;
+                    left_let_statement.Value = ((BinaryOperationExpression)s.Value).Operand1;
+
+                    VariableExpression _var = new VariableExpression();
+                    _var.Name = var_dec.Name;
+                    ((BinaryOperationExpression)s.Value).Operand1 = _var;
+                    letStatements.AddRange(SimplifyExpressions(left_let_statement, lVars));
                 }
 
-                foreach (LetStatement letStatement in right_simplified_statements)
+
+                if (((BinaryOperationExpression)s.Value).Operand2 is BinaryOperationExpression)
                 {
-                    letStatements.Add(letStatement);
+                    VarDeclaration var_dec = new VarDeclaration("int", "_" + (lVars.Count+1));
+                    lVars.Add(var_dec);
+                    LetStatement left_let_statement = new LetStatement();
+                    left_let_statement.Variable = var_dec.Name;
+                    left_let_statement.Value = ((BinaryOperationExpression)s.Value).Operand2;
+
+
+
+                    VariableExpression _var = new VariableExpression();
+                    _var.Name = var_dec.Name;
+                    ((BinaryOperationExpression)s.Value).Operand2 = _var;
+                    letStatements.AddRange(SimplifyExpressions(left_let_statement, lVars));
                 }
+                Console.WriteLine("" + s.ToString());
+                letStatements.Add(s);
             }
-
             return letStatements;
         }
         public List<LetStatement> SimplifyExpressions(List<LetStatement> ls, List<VarDeclaration> lVars)

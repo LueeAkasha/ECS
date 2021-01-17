@@ -34,3 +34,10 @@ C:\Users\luee\Documents\GitHub\ECS\3.3\obj\Debug\SimpleCompiler.csprojAssemblyRe
 C:\Users\luee\Documents\GitHub\ECS\3.3\obj\Debug\SimpleCompiler.csproj.CoreCompileInputs.cache
 C:\Users\luee\Documents\GitHub\ECS\3.3\obj\Debug\ExpressionCompiler.exe
 C:\Users\luee\Documents\GitHub\ECS\3.3\obj\Debug\ExpressionCompiler.pdb
+C:\Users\lueea\ECS\3.3\obj\Debug\SimpleCompiler.csprojAssemblyReference.cache
+C:\Users\lueea\ECS\3.3\obj\Debug\SimpleCompiler.csproj.CoreCompileInputs.cache
+C:\Users\lueea\ECS\3.3\obj\Debug\ExpressionCompiler.exe
+C:\Users\lueea\ECS\3.3\obj\Debug\ExpressionCompiler.pdb
+C:\Users\lueea\ECS\3.3\bin\Debug\ExpressionCompiler.exe.config
+C:\Users\lueea\ECS\3.3\bin\Debug\ExpressionCompiler.exe
+C:\Users\lueea\ECS\3.3\bin\Debug\ExpressionCompiler.pdb

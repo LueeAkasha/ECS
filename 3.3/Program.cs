@@ -120,17 +120,17 @@ namespace SimpleCompiler
             List<string> lAssignments = new List<string>();
             lAssignments.Add("let x1 = 1;");
             lAssignments.Add("let x2 = 3;");
-            lAssignments.Add("let x3 = (((x1 + 1) - 4) + ((x2 + x1) - 2));");
-            lAssignments.Add("let x4 = ((x2 + x3) - (x2 -7));");
-            lAssignments.Add("let x5 = (1000 - ((x1 + (((((x2 + x3) - x4) + x1) - x2) + x3)) - ((x1 - x2) + x4)));");
+            //lAssignments.Add("let x3 = (((x1 + 1) - 4) + ((x2 + x1) - 2));");
+            //lAssignments.Add("let x4 = ((x2 + x3) - (x2 -7));");
+            //lAssignments.Add("let x5 = (1000 - ((x1 + (((((x2 + x3) - x4) + x1) - x2) + x3)) - ((x1 - x2) + x4)));");
 
             List<LetStatement> ls = c.ParseAssignments(lAssignments);
             Dictionary<string, int> dValues = new Dictionary<string, int>();
             dValues["x1"] = 0;
             dValues["x2"] = 0;
-            dValues["x3"] = 0;
+              dValues["x3"] = 0;
             dValues["x4"] = 0;
-            dValues["x5"] = 0;
+             dValues["x5"] = 0;
 
             CPUEmulator cpu = new CPUEmulator();
             cpu.Compute(ls, dValues);
@@ -142,25 +142,28 @@ namespace SimpleCompiler
             dValues2["x2"] = 0;
             dValues2["x3"] = 0;
             dValues2["x4"] = 0;
-            dValues2["x5"] = 0;
+             dValues2["x5"] = 0;
 
             cpu.Compute(lSimple, dValues2);
 
             foreach (string sKey in dValues.Keys)
                 if (dValues[sKey] != dValues2[sKey])
-                    Console.WriteLine("BGUBGU");
+                {
+
+                    Console.WriteLine("Got  " + dValues2[sKey] + "  instead of:  " + dValues[sKey]);
+                    Console.WriteLine("BGUBGU1");
+                }
 
             List<string> lAssembly = c.GenerateCode(lSimple, vars);
 
             InitLCL(lAssembly);
             cpu.Code = lAssembly;
             cpu.Run(1000, false);
-            if (cpu.M[24] != dValues2["x5"])
-                Console.WriteLine("BUGBUG");
+            if (cpu.M[21] != dValues2["x2"])
+                Console.WriteLine("BUGBUG2");
 
+            Console.WriteLine("WELL DONE!");
         }
-
-
 
 
         static void Main(string[] args)
@@ -170,6 +173,8 @@ namespace SimpleCompiler
             // Test3();
             //TestParseAndErrors();
             Test4();
+            //
+
             Console.Read();
         }
 
